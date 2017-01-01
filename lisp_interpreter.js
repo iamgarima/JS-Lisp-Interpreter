@@ -7,7 +7,6 @@ function splitter (input) {
               .split(' ')
 }
 
-
 // tokenize function removes the empty strings and the parenthesis elements
 // from the array and put each expression in a new array taking consideration
 // of the parenthesis
@@ -15,7 +14,7 @@ function splitter (input) {
 function tokenize (input, list) {
   var firstElem = input.shift()
   if (firstElem === undefined) {
-    return list.pop();
+    return list.pop()
   }
   if (firstElem === '') {
     return tokenize(input, list)
@@ -31,7 +30,6 @@ function tokenize (input, list) {
   return tokenize(input, list)
 }
 
-
 // object having predefined and user-defined keywords
 var obj = {
   '+': function sum (arr) {
@@ -42,4 +40,19 @@ var obj = {
     }
     return sum
   }
+}
+
+// function for special statements like define
+function special (input) {
+  if (input[0] === 'define') {
+    console.log(input.shift())
+    obj[input.shift()] = evaluator(input)
+  }
+  return evaluator(input)
+}
+console.log(special(tokenize(splitter('(define A 5)'), [])))
+
+// evaluator function for evaluating expressions, variables and literals
+function evaluator () {
+
 }
