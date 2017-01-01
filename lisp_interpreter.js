@@ -43,16 +43,28 @@ var obj = {
 }
 
 // function for special statements like define
+// console.log(special(tokenize(splitter('(define A 5)'), [])))
 function special (input) {
-  if (input[0] === 'define') {
-    console.log(input.shift())
+  var firstElem = input.shift()
+  if (firstElem === 'define') {
     obj[input.shift()] = evaluator(input)
   }
-  return evaluator(input)
+  else {
+    input.unshift(firstElem)
+    return evaluator(input)
+  }
 }
-console.log(special(tokenize(splitter('(define A 5)'), [])))
 
 // evaluator function for evaluating expressions, variables and literals
-function evaluator () {
-
+function evaluator (input) {
+  var firstElem = input.shift()
+  if (typeof Number(firstElem) === 'number' && Number(firstElem) === Number(firstElem)) {
+    return Number(firstElem)
+  }
+  if (obj[firstElem] !== undefined) {
+    return obj[firstElem]
+  }
 }
+
+//console.log(special(tokenize(splitter('(define A 5)'), [])))
+//console.log(special(tokenize(splitter('(A)'), [])))
