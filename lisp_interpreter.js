@@ -30,3 +30,16 @@ function tokenize (input, list) {
   list.push(firstElem)
   return tokenize(input, list)
 }
+
+
+// object having predefined and user-defined keywords
+var obj = {
+  '+': function sum (arr) {
+    var l = arr.length
+    var sum = 0
+    for (var i = 0; i < l; ++i) {
+      sum += arr[i]
+    }
+    return sum
+  }
+}
