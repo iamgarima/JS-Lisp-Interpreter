@@ -49,6 +49,9 @@ function special (input) {
   if (firstElem === 'define') {
     obj[input.shift()] = evaluator(input)
   }
+  else if (firstElem === 'set!') {
+    obj[input.shift()] = evaluator(input)
+  }
   else if (firstElem === 'if') {
     var emp = []
     if (special(input.shift())) {
@@ -96,3 +99,5 @@ function evaluator (input) {
 // console.log(special(tokenize(splitter('(A)'), [])))
 // console.log(special(tokenize(splitter('(+ 2 (+ 1 1 1) A)'), [])))
 // console.log(special(tokenize(splitter('(if (+ 1 2) 2 (+ 2 2))'), [])))
+// console.log(special(tokenize(splitter('(set! A (+ A 1))'), [])))
+// console.log(special(tokenize(splitter('(A)'), [])))
