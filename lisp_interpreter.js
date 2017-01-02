@@ -14,6 +14,9 @@ function splitter (input) {
 function tokenize (input, list) {
   var firstElem = input.shift()
   if (firstElem === undefined) {
+    if (typeof list[0] !== 'object') {
+      return list
+    }
     return list.pop()
   }
   if (firstElem === '') {
@@ -112,6 +115,6 @@ function evaluator (input) {
 // console.log(special(tokenize(splitter('(+ 2 (+ 1 1 1) A)'), [])))
 // console.log(special(tokenize(splitter('(if (+ 1 2) 2 (+ 2 2))'), [])))
 // console.log(special(tokenize(splitter('(set! A (+ A 1))'), [])))
-// console.log(special(tokenize(splitter('(A)'), [])))
+ console.log(special(tokenize(splitter('A'), [])))
 // console.log(special(tokenize(splitter('(quote 3)'), [])))
- console.log(special(tokenize(splitter('(begin (set! x 5) (+ x 1))'), [])))
+// console.log(special(tokenize(splitter('(begin (set! x 5) (+ x 1))'), [])))
