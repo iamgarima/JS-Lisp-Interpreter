@@ -49,6 +49,18 @@ function special (input) {
   if (firstElem === 'define') {
     obj[input.shift()] = evaluator(input)
   }
+  else if (firstElem === 'if') {
+    var emp = []
+    if (special(input.shift())) {
+      emp.push(input.shift())
+      return special(emp)
+    }
+    else {
+      input.shift()
+      emp.push(input.shift())
+      return special(emp)
+    }
+  }
   else {
     input.unshift(firstElem)
     return evaluator(input)
@@ -59,6 +71,7 @@ function special (input) {
 function evaluator (input) {
   var firstElem = input.shift()
   var argsArr = []
+  var fn
 
   if (typeof Number(firstElem) === 'number' && Number(firstElem) === Number(firstElem)) {
     return Number(firstElem)
@@ -82,3 +95,4 @@ function evaluator (input) {
 // console.log(special(tokenize(splitter('(define A 5)'), [])))
 // console.log(special(tokenize(splitter('(A)'), [])))
 // console.log(special(tokenize(splitter('(+ 2 (+ 1 1 1) A)'), [])))
+// console.log(special(tokenize(splitter('(if (+ 1 2) 2 (+ 2 2))'), [])))
