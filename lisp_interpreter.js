@@ -96,6 +96,15 @@ function evaluator (input) {
   if (firstElem === 'quote') {
     return input.shift()
   }
+  if (firstElem === 'begin') {
+    var len = input.length
+    for (var j = 0; j < len; ++j) {
+      if (j === len - 1) {
+        return special(input.shift())
+      }
+      special(input.shift())
+    }
+  }
 }
 
 // console.log(special(tokenize(splitter('(define A 5)'), [])))
@@ -104,4 +113,5 @@ function evaluator (input) {
 // console.log(special(tokenize(splitter('(if (+ 1 2) 2 (+ 2 2))'), [])))
 // console.log(special(tokenize(splitter('(set! A (+ A 1))'), [])))
 // console.log(special(tokenize(splitter('(A)'), [])))
-console.log(special(tokenize(splitter('(quote 3)'), [])))
+// console.log(special(tokenize(splitter('(quote 3)'), [])))
+ console.log(special(tokenize(splitter('(begin (set! x 5) (+ x 1))'), [])))
