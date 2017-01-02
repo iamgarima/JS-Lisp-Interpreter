@@ -58,13 +58,27 @@ function special (input) {
 // evaluator function for evaluating expressions, variables and literals
 function evaluator (input) {
   var firstElem = input.shift()
+  var argsArr = []
+
   if (typeof Number(firstElem) === 'number' && Number(firstElem) === Number(firstElem)) {
     return Number(firstElem)
   }
   if (obj[firstElem] !== undefined) {
-    return obj[firstElem]
+    if (typeof obj[firstElem] === 'number') {
+      return obj[firstElem]
+    }
+    fn = obj[firstElem]
+    var l = input.length
+    for (var i = 0; i < l; ++i) {
+      argsArr.push(evaluator(input))
+    }
+    return fn(argsArr)
+  }
+  if (typeof firstElem === 'object') {
+    return evaluator(firstElem)
   }
 }
 
-//console.log(special(tokenize(splitter('(define A 5)'), [])))
-//console.log(special(tokenize(splitter('(A)'), [])))
+// console.log(special(tokenize(splitter('(define A 5)'), [])))
+// console.log(special(tokenize(splitter('(A)'), [])))
+// console.log(special(tokenize(splitter('(+ 2 (+ 1 1 1) A)'), [])))
