@@ -37,6 +37,39 @@ function tokenize (input, list) {
 var obj = {
   '+': function (a, b) {
     return a + b
+  },
+  '-': function (a, b) {
+    return a - b
+  },
+  '*': function (a, b) {
+    return a * b
+  },
+  '/': function (a, b) {
+    return a / b
+  },
+  '>': function (a, b) {
+    return a > b
+  },
+  '<': function (a, b) {
+    return a < b
+  },
+  '>=': function (a, b) {
+    return a >= b
+  },
+  '<=': function (a, b) {
+    return a <= b
+  },
+  'equal?': function (a, b) {
+    return (a === b)
+  },
+  'number?': function (a) {
+    return !isNaN(a)
+  },
+  'sqr': function (a) {
+    return a * a
+  },
+  'sqrt': function (a) {
+    return Math.sqrt(a)
   }
 }
 
@@ -86,6 +119,9 @@ function evaluator (input) {
     for (var i = 0; i < l; ++i) {
       argsArr.push(evaluator(input))
     }
+    if (argsArr.length === 1) {
+      return fn(argsArr.pop())
+    }
     return argsArr.reduce(fn)
   }
   if (firstElem[0] === 'lambda') {
@@ -129,3 +165,4 @@ function evaluator (input) {
 // console.log(special(tokenize(splitter('(begin (set! x 5) (+ x 1))'), [])))
 // console.log(special(tokenize(splitter('((lambda (x y) (+ x y)) 1 6)'), [])))
 // console.log(special(tokenize(splitter('((lambda (x) x) 1)'), [])))
+// console.log(special(tokenize(splitter('(number? "g")'), [])))
