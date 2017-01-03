@@ -35,13 +35,8 @@ function tokenize (input, list) {
 
 // object having predefined and user-defined keywords
 var obj = {
-  '+': function sum (arr) {
-    var l = arr.length
-    var sum = 0
-    for (var i = 0; i < l; ++i) {
-      sum += arr[i]
-    }
-    return sum
+  '+': function (a, b) {
+    return a + b
   }
 }
 
@@ -91,7 +86,7 @@ function evaluator (input) {
     for (var i = 0; i < l; ++i) {
       argsArr.push(evaluator(input))
     }
-    return fn(argsArr)
+    return argsArr.reduce(fn)
   }
   if (firstElem[0] === 'lambda') {
     var ln = firstElem[1].length
