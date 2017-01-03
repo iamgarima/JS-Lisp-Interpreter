@@ -89,16 +89,12 @@ function special (input) {
       emp.push(input.shift())
       return special(emp)
     }
-    else {
-      input.shift()
-      emp.push(input.shift())
-      return special(emp)
-    }
+    input.shift()
+    emp.push(input.shift())
+    return special(emp)
   }
-  else {
-    input.unshift(firstElem)
-    return evaluator(input)
-  }
+  input.unshift(firstElem)
+  return evaluator(input)
 }
 
 // evaluator function for evaluating expressions, variables and literals
@@ -132,11 +128,9 @@ function evaluator (input) {
     if (typeof firstElem[2] === 'object') {
       return special(firstElem[2])
     }
-    else {
-      var arr = []
-      arr.push(firstElem[2])
-      return special(arr)
-    }
+    var arr = []
+    arr.push(firstElem[2])
+    return special(arr)
   }
   if (typeof firstElem === 'object') {
     return evaluator(firstElem)
