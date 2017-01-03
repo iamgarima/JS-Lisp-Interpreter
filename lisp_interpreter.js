@@ -93,6 +93,20 @@ function evaluator (input) {
     }
     return fn(argsArr)
   }
+  if (firstElem[0] === 'lambda') {
+    var ln = firstElem[1].length
+    for (var k = 0; k < ln; ++k) {
+      obj[firstElem[1][k]] = Number(input[k])
+    }
+    if (typeof firstElem[2] === 'object') {
+      return special(firstElem[2])
+    }
+    else {
+      var arr = []
+      arr.push(firstElem[2])
+      return special(arr)
+    }
+  }
   if (typeof firstElem === 'object') {
     return evaluator(firstElem)
   }
@@ -115,6 +129,8 @@ function evaluator (input) {
 // console.log(special(tokenize(splitter('(+ 2 (+ 1 1 1) A)'), [])))
 // console.log(special(tokenize(splitter('(if (+ 1 2) 2 (+ 2 2))'), [])))
 // console.log(special(tokenize(splitter('(set! A (+ A 1))'), [])))
- console.log(special(tokenize(splitter('A'), [])))
+// console.log(special(tokenize(splitter('A'), [])))
 // console.log(special(tokenize(splitter('(quote 3)'), [])))
 // console.log(special(tokenize(splitter('(begin (set! x 5) (+ x 1))'), [])))
+// console.log(special(tokenize(splitter('((lambda (x y) (+ x y)) 1 6)'), [])))
+// console.log(special(tokenize(splitter('((lambda (x) x) 1)'), [])))
