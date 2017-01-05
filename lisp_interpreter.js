@@ -1,36 +1,100 @@
 // splitter function first add the spaces around both the parenthesis
 // and then split them on space thus separating each element in input
 // console.log(splitter('(+ 2 3)'))
-function splitter (input) {
-  return input.replace(/\(/g, ' ( ')
-              .replace(/\)/g, ' ) ')
-              .split(' ')
-}
+// function splitter (input) {
+//   return input.replace(/\(/g, ' ( ')
+//               .replace(/\)/g, ' ) ')
+//               .split(' ')
+// }
 
 // tokenize function removes the empty strings and the parenthesis elements
 // from the array and put each expression in a new array taking consideration
 // of the parenthesis
 // console.log(tokenize(splitter('(+ 2 3)'), []))
-function tokenize (input, list) {
-  var firstElem = input.shift()
-  if (firstElem === undefined) {
-    if (typeof list[0] !== 'object') {
-      return list
+// function tokenize (input, list) {
+//   var firstElem = input.shift()
+//   if (firstElem === undefined) {
+//     if (typeof list[0] !== 'object') {
+//       return list
+//     }
+//     return list.pop()
+//   }
+//   if (firstElem === '') {
+//     return tokenize(input, list)
+//   }
+//   if (firstElem === '(') {
+//     list.push(tokenize(input, []))
+//     return tokenize(input, list)
+//   }
+//   if (firstElem === ')') {
+//     return list
+//   }
+//   list.push(firstElem)
+//   return tokenize(input, list)
+// }
+
+// Parser
+var operators = ['+', '-', '*', '/', '>', '>=', '<', '<=']
+var keywords = ['if', 'define', 'begin', 'set!', 'lambda', 'quote', 'sqr', 'sqrt', 'equal?', 'number?']
+var next
+function parse (input, arr) {
+  if (input.startsWith('(')) {
+    next = parse(input.slice(1), [])
+    if (next[0].slice(1) === "") {
+      return next[1]
     }
-    return list.pop()
+    arr = arr.concat([next[1]])
+    return parse(next[0].slice(1), arr)
   }
-  if (firstElem === '') {
-    return tokenize(input, list)
+  if (input.startsWith(')')) {
+    return [input, arr]
   }
-  if (firstElem === '(') {
-    list.push(tokenize(input, []))
-    return tokenize(input, list)
+  var result
+  result = factory_parser(input).pop()
+  if (result[1] === '') {
+    return arr.concat(result[0])
   }
-  if (firstElem === ')') {
-    return list
+  return parse(result[1], arr.concat(result[0]))
+}
+
+function factory_parser (input) {
+  var fnArr = [number_parser(input), opertor_parser(input), keyword_parser(input), space_parser(input)]
+  return fnArr.filter(function (value) {
+    return (typeof value === 'object')
+  })
+}
+
+function elem(p) {
+  var str = ""
+  var sl = p[0]
+  while(sl !== " " && sl !== ')') {
+    str = str + sl
+    sl = p.slice(1)[0]
+    p = p.slice(1)
+    if (sl === undefined) {
+      break;
+    }
   }
-  list.push(firstElem)
-  return tokenize(input, list)
+  return [str, p]
+}
+
+function number_parser (input) {
+  var first = elem(input)
+  return (!isNaN(Number(first[0]))) ? first : false
+}
+
+function opertor_parser (input) {
+  var first = elem(input)
+  return (operators.indexOf(first[0]) !== -1) ? first : false
+}
+
+function keyword_parser (input) {
+  var first = elem(input)
+  return (typeof first[0] === 'string') ? first : false
+}
+
+function space_parser (input) {
+  return (input[0] === ' ') ? [[], input.slice(1)] : false
 }
 
 // object having predefined and user-defined keywords
@@ -74,7 +138,7 @@ var obj = {
 }
 
 // function for special statements like define
-// console.log(special(tokenize(splitter('(define A 5)'), [])))
+// console.log(special(parse('(define A 5)', [])))
 function special (input) {
   var firstElem = input.shift()
   if (firstElem === 'define') {
@@ -149,14 +213,18 @@ function evaluator (input) {
   }
 }
 
-// console.log(special(tokenize(splitter('(define A 5)'), [])))
-// console.log(special(tokenize(splitter('(A)'), [])))
-// console.log(special(tokenize(splitter('(+ 2 (+ 1 1 1) A)'), [])))
-// console.log(special(tokenize(splitter('(if (+ 1 2) 2 (+ 2 2))'), [])))
-// console.log(special(tokenize(splitter('(set! A (+ A 1))'), [])))
-// console.log(special(tokenize(splitter('A'), [])))
-// console.log(special(tokenize(splitter('(quote 3)'), [])))
-// console.log(special(tokenize(splitter('(begin (set! x 5) (+ x 1))'), [])))
-// console.log(special(tokenize(splitter('((lambda (x y) (+ x y)) 1 6)'), [])))
-// console.log(special(tokenize(splitter('((lambda (x) x) 1)'), [])))
-// console.log(special(tokenize(splitter('(number? "g")'), [])))
+// console.log(special(parse('(define A 5)', [])))
+// console.log(special(parse('A', [])))
+// console.log(special(parse('(+ 2 (+ 1 1 1) A)', [])))
+// console.log(special(parse('(if (+ 1 2) 2 (+ 2 2))', [])))
+// console.log(special(parse('(set! A (+ A 1))', [])))
+// console.log(special(parse('A', [])))
+// console.log(special(parse('(quote 3)', [])))
+// console.log(special(parse('(begin (set! x 5) (+ x 1))', [])))
+// console.log(special(parse('((lambda (x y) (+ x y)) 1 6)', [])))
+// console.log(special(parse('(define a (lambda (x y) (+ x y)))', [])))
+// console.log(special(parse('(define (add a b) (+ a b))', [])))
+// console.log(special(parse('((lambda (x) x) 1)', [])))
+// console.log(special(parse('(number? "g")', [])))
+
+//console.log(special(tokenize(splitter('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3))'), [])))
