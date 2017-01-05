@@ -97,6 +97,12 @@ function space_parser (input) {
   return (input[0] === ' ') ? [[], input.slice(1)] : false
 }
 
+//macro
+function macro(name, parametersList, body) {
+  var convertedInput = '(define ' + name + ' (lambda ' + parametersList + ' ' + body + '))'
+  return console.log(special(parser(convertedInput, [])))
+}
+
 // object having predefined and user-defined keywords
 var obj = {
   '+': function (a, b) {
