@@ -33,6 +33,33 @@
 //   return tokenize(input, list)
 // }
 
+// Check macro
+'(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3))'
+function checkMacro(input2) {
+  var keyword = input2.slice(1, 6)
+  if (keyword === 'defun') {
+    var newInput = input2.slice(7)
+    var name = elem(newInput)[0]
+    var str = c(newInput)
+    var parametersList = str[0] + ')'
+    var body = '(' + str[1]
+    return macro(name, parametersList, body)
+  }
+}
+
+
+function c(input3) {
+  return input3.match(/\(.+\)/)[0].split(') (')
+}
+// console.log(c('defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3)'))
+
+//macro
+function macro(name, parametersList, body) {
+  var convertedInput = '(define ' + name + ' (lambda ' + parametersList + ' ' + body + ')'
+  return convertedInput
+}
+
+
 // Parser
 var operators = ['+', '-', '*', '/', '>', '>=', '<', '<=']
 var keywords = ['if', 'define', 'begin', 'set!', 'lambda', 'quote', 'sqr', 'sqrt', 'equal?', 'number?']
@@ -95,12 +122,6 @@ function keyword_parser (input) {
 
 function space_parser (input) {
   return (input[0] === ' ') ? [[], input.slice(1)] : false
-}
-
-//macro
-function macro(name, parametersList, body) {
-  var convertedInput = '(define ' + name + ' (lambda ' + parametersList + ' ' + body + '))'
-  return console.log(special(parser(convertedInput, [])))
 }
 
 // object having predefined and user-defined keywords
@@ -219,6 +240,8 @@ function evaluator (input) {
   }
 }
 
+
+
 // console.log(special(parse('(define A 5)', [])))
 // console.log(special(parse('A', [])))
 // console.log(special(parse('(+ 2 (+ 1 1 1) A)', [])))
@@ -227,10 +250,11 @@ function evaluator (input) {
 // console.log(special(parse('A', [])))
 // console.log(special(parse('(quote 3)', [])))
 // console.log(special(parse('(begin (set! x 5) (+ x 1))', [])))
-// console.log(special(parse('((lambda (x y) (+ x y)) 1 6)', [])))
+// console.log((parse('((lambda (x y) (+ x y)) 1 6)', [])))
 // console.log(special(parse('(define a (lambda (x y) (+ x y)))', [])))
 // console.log(special(parse('(define (add a b) (+ a b))', [])))
 // console.log(special(parse('((lambda (x) x) 1)', [])))
 // console.log(special(parse('(number? "g")', [])))
-
-//console.log(special(tokenize(splitter('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3))'), [])))
+// console.log('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))')
+// console.log((parse('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))', [])))
+// console.log(special(parse(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3))'), [])))
