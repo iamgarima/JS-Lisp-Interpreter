@@ -33,6 +33,7 @@
 //   return tokenize(input, list)
 // }
 
+// object for storing the macros defined
 var macroStore = {}
 
 // Check macro
@@ -44,6 +45,9 @@ function checkMacro (input) {
     var parametersList = params(newInput)
     var body = input.slice(keyword.length + name.length + parametersList.length + 3)
     macro(name, parametersList, body)
+  }
+  else {
+    return input
   }
 }
 
@@ -69,13 +73,14 @@ function params (input) {
 function macro (name, parametersList, body) {
   macroStore[name] = '(lambda ' + parametersList + ' ' + body
 }
- console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
- console.log(macroStore['avgnum'])
+// console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
+// console.log(macroStore['avgnum'])
 
 // Parser
 var operators = ['+', '-', '*', '/', '>', '>=', '<', '<=']
 var next
 function parse (input, arr) {
+  if (input === undefined) { return undefined }
   if (input.startsWith('(')) {
     next = parse(input.slice(1), [])
     if (next[0].slice(1) === '') {
@@ -178,6 +183,7 @@ var store = {
 // function for special statements like define
 // console.log(special(parse('(define A 5)', [])))
 function special (input) {
+  if (input === undefined) { return undefined }
   var firstElem = input.shift()
   if (firstElem === 'define') {
     store[input.shift()] = evaluator(input)
@@ -260,19 +266,19 @@ function evaluator (input) {
   }
 }
 
-// console.log(special(parse('(define A 5)', [])))
-// console.log(special(parse('A', [])))
-// console.log(special(parse('(+ 2 (+ 1 1 1) A)', [])))
+// console.log(special(parse(checkMacro('(define A 5)'), [])))
+// console.log(special(parse(checkMacro('A'), [])))
+// console.log(special(parse(checkMacro('(+ 2 (+ 1 1 1))', []))))
 // console.log(special(parse('(if (+ 1 2) 2 (+ 2 2))', [])))
 // console.log(special(parse('(set! A (+ A 1))', [])))
 // console.log(special(parse('A', [])))
 // console.log(special(parse('(quote 3)', [])))
 // console.log(special(parse('(begin (set! x 5) (+ x 1))', [])))
-// console.log((parse('((lambda (x y) (+ x y)) 1 6)', [])))
+// console.log(special(parse('((lambda (x y) (+ x y)) 1 6)', [])))
 // console.log(special(parse('(define a (lambda (x y) (+ x y)))', [])))
 // console.log(special(parse('((lambda (x) x) 1)', [])))
 // console.log(special(parse('(number? "g")', [])))
 // console.log('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))')
 // console.log((parse('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))', [])))
-// console.log(checkMacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))', []))
-// console.log(special(parse('(add 1 2 3)', [])))
+ console.log(special(parse(checkMacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))'), [])))
+ console.log(special(parse('(add 1 2 3)', [])))
