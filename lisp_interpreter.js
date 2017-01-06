@@ -33,25 +33,28 @@
 //   return tokenize(input, list)
 // }
 
+var macroStore = {}
+
 // Check macro
-function checkMacro(input2) {
-  var keyword = input2.slice(1, 6)
+function checkMacro (input) {
+  var keyword = input.slice(1, 6)
   if (keyword === 'defun') {
-    var newInput = input2.slice(7)
+    var newInput = input.slice(7)
     var name = elem(newInput)[0]
-    var parametersList = c(newInput)
-    var body = input2.slice(keyword.length + name.length + parametersList.length + 3)
+    var parametersList = params(newInput)
+    var body = input.slice(keyword.length + name.length + parametersList.length + 3)
     macro(name, parametersList, body)
   }
 }
 
-function c(input3) {
-  var ln = input3.length
-  for(var j = 0; j < ln; ++j) {
+// extract parameters from the given input
+function params (input) {
+  var ln = input.length
+  for (var j = 0; j < ln; ++j) {
     var str = ''
-    if (input3[j] === '(') {
-      while(input3[j] !== ')') {
-        str += input3[j]
+    if (input[j] === '(') {
+      while (input[j] !== ')') {
+        str += input[j]
         ++j
       }
       str = str + ')'
@@ -59,26 +62,23 @@ function c(input3) {
     }
   }
 }
-// console.log(c('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 n3))'))
-// console.log(c('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'))
+// console.log(params('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 n3))'))
+// console.log(params('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'))
 
-var objM = {}
-
-//macro
-function macro(name, parametersList, body) {
-  objM[name] = '(lambda ' + parametersList + ' ' + body
+// stores the macro as lambda function in macroStore
+function macro (name, parametersList, body) {
+  macroStore[name] = '(lambda ' + parametersList + ' ' + body
 }
-//console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
-
+ console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
+ console.log(macroStore['avgnum'])
 
 // Parser
 var operators = ['+', '-', '*', '/', '>', '>=', '<', '<=']
-var keywords = ['if', 'define', 'begin', 'set!', 'lambda', 'quote', 'sqr', 'sqrt', 'equal?', 'number?']
 var next
 function parse (input, arr) {
   if (input.startsWith('(')) {
     next = parse(input.slice(1), [])
-    if (next[0].slice(1) === "") {
+    if (next[0].slice(1) === '') {
       return next[1]
     }
     arr = arr.concat([next[1]])
@@ -102,18 +102,18 @@ function factory_parser (input) {
   })
 }
 
-function elem(p) {
-  var str = ""
-  var sl = p[0]
-  while(sl !== " " && sl !== ')') {
+function elem (input) {
+  var str = ''
+  var sl = input[0]
+  while (sl !== ' ' && sl !== ')') {
     str = str + sl
-    sl = p.slice(1)[0]
-    p = p.slice(1)
+    sl = input.slice(1)[0]
+    input = input.slice(1)
     if (sl === undefined) {
-      break;
+      break
     }
   }
-  return [str, p]
+  return [str, input]
 }
 
 function number_parser (input) {
@@ -136,7 +136,7 @@ function space_parser (input) {
 }
 
 // object having predefined and user-defined keywords
-var obj = {
+var store = {
   '+': function (a, b) {
     return a + b
   },
@@ -180,10 +180,10 @@ var obj = {
 function special (input) {
   var firstElem = input.shift()
   if (firstElem === 'define') {
-    obj[input.shift()] = evaluator(input)
+    store[input.shift()] = evaluator(input)
   }
   else if (firstElem === 'set!') {
-    obj[input.shift()] = evaluator(input)
+    store[input.shift()] = evaluator(input)
   }
   else if (firstElem === 'if') {
     var emp = []
@@ -208,11 +208,11 @@ function evaluator (input) {
   if (typeof Number(firstElem) === 'number' && Number(firstElem) === Number(firstElem)) {
     return Number(firstElem)
   }
-  if (obj[firstElem] !== undefined) {
-    if (typeof obj[firstElem] === 'number') {
-      return obj[firstElem]
+  if (store[firstElem] !== undefined) {
+    if (typeof store[firstElem] === 'number') {
+      return store[firstElem]
     }
-    fn = obj[firstElem]
+    fn = store[firstElem]
     var l = input.length
     for (var i = 0; i < l; ++i) {
       argsArr.push(evaluator(input))
@@ -225,7 +225,7 @@ function evaluator (input) {
   if (firstElem[0] === 'lambda') {
     var ln = firstElem[1].length
     for (var k = 0; k < ln; ++k) {
-      obj[firstElem[1][k]] = Number(input[k])
+      store[firstElem[1][k]] = Number(input[k])
     }
     if (typeof firstElem[2] === 'object') {
       return special(firstElem[2])
@@ -249,11 +249,11 @@ function evaluator (input) {
       special(input.shift())
     }
   }
-  if (objM[firstElem] !== undefined) {
-    var m = '(' + objM[firstElem] + ' '
-    var l = input.length
-    for(var i = 0; i < l; ++i) {
-      m += String(special([input[i]])) + ' '
+  if (macroStore[firstElem] !== undefined) {
+    var m = '(' + macroStore[firstElem] + ' '
+    var length = input.length
+    for (var c = 0; c < length; ++c) {
+      m += String(special([input[c]])) + ' '
     }
     m += ')'
     return special(parse(m, []))
@@ -270,7 +270,6 @@ function evaluator (input) {
 // console.log(special(parse('(begin (set! x 5) (+ x 1))', [])))
 // console.log((parse('((lambda (x y) (+ x y)) 1 6)', [])))
 // console.log(special(parse('(define a (lambda (x y) (+ x y)))', [])))
-// console.log(special(parse('(define (add a b) (+ a b))', [])))
 // console.log(special(parse('((lambda (x) x) 1)', [])))
 // console.log(special(parse('(number? "g")', [])))
 // console.log('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))')
