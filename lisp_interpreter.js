@@ -34,24 +34,33 @@
 // }
 
 // Check macro
-'(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3))'
 function checkMacro(input2) {
   var keyword = input2.slice(1, 6)
   if (keyword === 'defun') {
     var newInput = input2.slice(7)
     var name = elem(newInput)[0]
-    var str = c(newInput)
-    var parametersList = str[0] + ')'
-    var body = '(' + str[1]
+    var parametersList = c(newInput)
+    var body = input2.slice(keyword.length + name.length + parametersList.length + 3)
     macro(name, parametersList, body)
   }
 }
 
-
 function c(input3) {
-  return input3.match(/\(.+\)/)[0].split(') (')
+  var ln = input3.length
+  for(var j = 0; j < ln; ++j) {
+    var str = ''
+    if (input3[j] === '(') {
+      while(input3[j] !== ')') {
+        str += input3[j]
+        ++j
+      }
+      str = str + ')'
+      return str
+    }
+  }
 }
-// console.log(c('defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3)'))
+// console.log(c('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 n3))'))
+// console.log(c('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'))
 
 var objM = {}
 
@@ -59,7 +68,8 @@ var objM = {}
 function macro(name, parametersList, body) {
   objM[name] = '(lambda ' + parametersList + ' ' + body
 }
-//console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) 3))'), [])
+//console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
+
 
 // Parser
 var operators = ['+', '-', '*', '/', '>', '>=', '<', '<=']
@@ -265,5 +275,5 @@ function evaluator (input) {
 // console.log(special(parse('(number? "g")', [])))
 // console.log('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))')
 // console.log((parse('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))', [])))
-// console.log(checkMacro('(defun add (n1 n2 n3) (+ n1 n2 n3))', []))
+// console.log(checkMacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))', []))
 // console.log(special(parse('(add 1 2 3)', [])))
