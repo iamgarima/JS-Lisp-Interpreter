@@ -34,45 +34,45 @@
 // }
 
 // object for storing the macros defined
-var macroStore = {}
+// var macroStore = {}
 
 // Check macro
-function checkMacro (input) {
-  var keyword = input.slice(1, 6)
-  if (keyword === 'defun') {
-    var newInput = input.slice(7)
-    var name = elem(newInput)[0]
-    var parametersList = params(newInput)
-    var body = input.slice(keyword.length + name.length + parametersList.length + 3)
-    macro(name, parametersList, body)
-  }
-  else {
-    return input
-  }
-}
+// function checkMacro (input) {
+//   var keyword = input.slice(1, 6)
+//   if (keyword === 'defun') {
+//     var newInput = input.slice(7)
+//     var name = elem(newInput)[0]
+//     var parametersList = params(newInput)
+//     var body = input.slice(keyword.length + name.length + parametersList.length + 3)
+//     macro(name, parametersList, body)
+//   }
+//   else {
+//     return input
+//   }
+// }
 
 // extract parameters from the given input
-function params (input) {
-  var ln = input.length
-  for (var j = 0; j < ln; ++j) {
-    var str = ''
-    if (input[j] === '(') {
-      while (input[j] !== ')') {
-        str += input[j]
-        ++j
-      }
-      str = str + ')'
-      return str
-    }
-  }
-}
+// function params (input) {
+//   var ln = input.length
+//   for (var j = 0; j < ln; ++j) {
+//     var str = ''
+//     if (input[j] === '(') {
+//       while (input[j] !== ')') {
+//         str += input[j]
+//         ++j
+//       }
+//       str = str + ')'
+//       return str
+//     }
+//   }
+// }
 // console.log(params('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 n3))'))
 // console.log(params('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'))
 
 // stores the macro as lambda function in macroStore
-function macro (name, parametersList, body) {
-  macroStore[name] = '(lambda ' + parametersList + ' ' + body
-}
+// function macro (name, parametersList, body) {
+//   macroStore[name] = '(lambda ' + parametersList + ' ' + body
+// }
 // console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
 // console.log(macroStore['avgnum'])
 
@@ -280,5 +280,5 @@ function evaluator (input) {
 // console.log(special(parse('(number? "g")', [])))
 // console.log('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))')
 // console.log((parse('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))', [])))
- console.log(special(parse(checkMacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))'), [])))
- console.log(special(parse('(add 1 2 3)', [])))
+// console.log(special(parse(checkMacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))'), [])))
+// console.log(special(parse('(add 1 2 3)', [])))
