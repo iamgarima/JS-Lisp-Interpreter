@@ -150,6 +150,40 @@ function spaceParser (input) {
 }
 // console.log(spaceParser(' (print num))'))
 
+function check (input) {
+  if (input[0] === '(') {
+    input = input.slice(1)
+    var keyword = keywordFunc(input)
+    if (macroS[keyword] === undefined) {
+      return '(' + input
+    }
+    input = input.slice(keyword.length)
+    input = spaceParser(input)
+    var macroArg = input.slice(0, input.length - 1)
+    var beginArr = macroS[keyword].map(function (value) {
+      return '(' + value + ' ' + macroArg + ')'
+    })
+    var str = ''
+    var j = 0
+    while (j < beginArr.length) {
+      str = str + beginArr[j] + ' '
+      ++j
+    }
+    return '(begin ' + str.trim() + ')'
+  }
+  return input
+}
+
+function keywordFunc (input) {
+  var count = 0
+  var i = 0
+  while (input[i] !== ' ') {
+    ++count
+    ++i
+  }
+  return input.slice(0, count)
+}
+
 // Parser
 var operators = ['+', '-', '*', '/', '>', '>=', '<', '<=']
 var next
@@ -329,21 +363,21 @@ function evaluator (input) {
       special(input.shift())
     }
   }
-  if (macroStore[firstElem] !== undefined) {
-    var m = '(' + macroStore[firstElem] + ' '
-    var length = input.length
-    for (var c = 0; c < length; ++c) {
-      m += String(special([input[c]])) + ' '
-    }
-    m += ')'
-    return special(parse(m, []))
-  }
+  // if (macroStore[firstElem] !== undefined) {
+  //   var m = '(' + macroStore[firstElem] + ' '
+  //   var length = input.length
+  //   for (var c = 0; c < length; ++c) {
+  //     m += String(special([input[c]])) + ' '
+  //   }
+  //   m += ')'
+  //   return special(parse(m, []))
+  // }
 }
 
-// console.log(special(parse(checkMacro('(define A 5)'), [])))
-// console.log(special(parse(checkMacro('A'), [])))
-// console.log(special(parse(checkMacro('(+ 2 (+ 1 1 1))', []))))
-// console.log(special(parse('(if (+ 1 2) 2 (+ 2 2))', [])))
+// console.log(special(parse(check('(define A 5)'), [])))
+// console.log(special(parse(check('A'), [])))
+// console.log(special(parse(check('(+ 2 (+ 1 1 1))'), [])))
+// console.log(special(parse(check('(if (+ 1 2) 2 (+ 2 2))'), [])))
 // console.log(special(parse('(set! A (+ A 1))', [])))
 // console.log(special(parse('A', [])))
 // console.log(special(parse('(quote 3)', [])))
