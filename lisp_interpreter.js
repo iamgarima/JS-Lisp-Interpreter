@@ -94,6 +94,13 @@ function macro (input) {
   }
 }
 
+function checkmacro (input) {
+  if (input.slice(1, 9) === 'defmacro') {
+    return macro(input)
+  }
+  return check(input)
+}
+
 function nameFunc (input) {
   var count = 0
   var i = 0
@@ -374,21 +381,22 @@ function evaluator (input) {
   // }
 }
 
-// console.log(special(parse(check('(define A 5)'), [])))
-// console.log(special(parse(check('A'), [])))
-// console.log(special(parse(check('(+ 2 (+ 1 1 1))'), [])))
-// console.log(special(parse(check('(if (+ 1 2) 2 (+ 2 2))'), [])))
-// console.log(special(parse('(set! A (+ A 1))', [])))
-// console.log(special(parse('A', [])))
-// console.log(special(parse('(quote 3)', [])))
-// console.log(special(parse('(begin (set! x 5) (+ x 1))', [])))
-// console.log(special(parse('((lambda (x y) (+ x y)) 1 6)', [])))
-// console.log(special(parse('(define a (lambda (x y) (+ x y)))', [])))
-// console.log(special(parse('((lambda (x) x) 1)', [])))
-// console.log(special(parse('(number? "g")', [])))
-// console.log('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))')
-// console.log((parse('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))', [])))
-// console.log(special(parse(checkMacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))'), [])))
-// console.log(special(parse('(add 1 2 3)', [])))
-// console.log(special(parse(macro('(defmacro setTo10(num ber) (define num 10) (print num))'), [])))
+// console.log(special(parse(checkmacro('(define A 5)'), [])))
+// console.log(special(parse(checkmacro('A'), [])))
+// console.log(special(parse(checkmacro('(+ 2 (+ 1 1 1))'), [])))
+// console.log(special(parse(checkmacro('(if (+ 1 2) 2 (+ 2 2))'), [])))
+// console.log(special(parse(checkmacro('(set! A (+ A 1))'), [])))
+// console.log(special(parse(checkmacro('A'), [])))
+// console.log(special(parse(checkmacro('(quote 3)'), [])))
+// console.log(special(parse(checkmacro('(begin (set! x 5) (+ x 1))'), [])))
+// console.log(special(parse(checkmacro('((lambda (x y) (+ x y)) 1 6)'), [])))
+// console.log(special(parse(checkmacro('(define a (lambda (x y) (+ x y)))'), [])))
+// console.log(special(parse(checkmacro('((lambda (x) x) 1)'), [])))
+// console.log(special(parse(checkmacro('(number? "g")'), [])))
+// console.log((parse(checkmacro('(define avgnum (lambda (n1 n2 n3) (/ (+ n1 n2 n3) 3)))'), [])))
+// console.log(special(parse(checkmacro('(defmacro defun(name args body) (lambda args body))'), [])))
+// console.log(checkmacro('(defun add (n1 n2 n3) (+ n1 (+ n2 n2) (+ n1 n1) n3))'))
+// console.log(special(parse(checkmacro('(add 1 2 3)'), [])))
+// console.log(special(parse(checkmacro('(defmacro setTo10(num) (define num 10) (* num num))'), [])))
+// console.log(special(parse(checkmacro('(setTo10 5)'), [])))
 // console.log(macroS)
