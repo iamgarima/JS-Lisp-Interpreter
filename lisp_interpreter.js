@@ -1,81 +1,3 @@
-// splitter function first add the spaces around both the parenthesis
-// and then split them on space thus separating each element in input
-// console.log(splitter('(+ 2 3)'))
-// function splitter (input) {
-//   return input.replace(/\(/g, ' ( ')
-//               .replace(/\)/g, ' ) ')
-//               .split(' ')
-// }
-
-// tokenize function removes the empty strings and the parenthesis elements
-// from the array and put each expression in a new array taking consideration
-// of the parenthesis
-// console.log(tokenize(splitter('(+ 2 3)'), []))
-// function tokenize (input, list) {
-//   var firstElem = input.shift()
-//   if (firstElem === undefined) {
-//     if (typeof list[0] !== 'object') {
-//       return list
-//     }
-//     return list.pop()
-//   }
-//   if (firstElem === '') {
-//     return tokenize(input, list)
-//   }
-//   if (firstElem === '(') {
-//     list.push(tokenize(input, []))
-//     return tokenize(input, list)
-//   }
-//   if (firstElem === ')') {
-//     return list
-//   }
-//   list.push(firstElem)
-//   return tokenize(input, list)
-// }
-
-// object for storing the macros defined
-// var macroStore = {}
-
-// Check macro
-// function checkMacro (input) {
-//   var keyword = input.slice(1, 6)
-//   if (keyword === 'defun') {
-//     var newInput = input.slice(7)
-//     var name = elem(newInput)[0]
-//     var parametersList = params(newInput)
-//     var body = input.slice(keyword.length + name.length + parametersList.length + 3)
-//     macro(name, parametersList, body)
-//   }
-//   else {
-//     return input
-//   }
-// }
-
-// extract parameters from the given input
-// function params (input) {
-//   var ln = input.length
-//   for (var j = 0; j < ln; ++j) {
-//     var str = ''
-//     if (input[j] === '(') {
-//       while (input[j] !== ')') {
-//         str += input[j]
-//         ++j
-//       }
-//       str = str + ')'
-//       return str
-//     }
-//   }
-// }
-// console.log(params('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 n3))'))
-// console.log(params('avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'))
-
-// stores the macro as lambda function in macroStore
-// function macro (name, parametersList, body) {
-//   macroStore[name] = '(lambda ' + parametersList + ' ' + body
-// }
-// console.log(checkMacro('(defun avgnum (n1 n2 n3) (/ (+ n1 n2 n3) (+ n1 n2 (+ n1 n3) n3)))'), [])
-// console.log(macroStore['avgnum'])
-
 var macroS = {}
 
 function macro (input) {
@@ -155,7 +77,6 @@ function spaceParser (input) {
   }
   return input.slice(count)
 }
-// console.log(spaceParser(' (print num))'))
 
 function check (input) {
   if (input[0] === '(') {
@@ -370,15 +291,6 @@ function evaluator (input) {
       special(input.shift())
     }
   }
-  // if (macroStore[firstElem] !== undefined) {
-  //   var m = '(' + macroStore[firstElem] + ' '
-  //   var length = input.length
-  //   for (var c = 0; c < length; ++c) {
-  //     m += String(special([input[c]])) + ' '
-  //   }
-  //   m += ')'
-  //   return special(parse(m, []))
-  // }
 }
 
 // console.log(special(parse(checkmacro('(define A 5)'), [])))
